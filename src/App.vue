@@ -1,47 +1,112 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="container">
+    <h1>Recipes</h1>
+    <div class="row">
+      <VueDraggableNext
+        v-for="(recipe, index) in dragStore.recipes"
+        :key="index"
+        class="col"
+        v-model="recipe.items"
+        group="shared"
+        :sort="true"
+        @end="onDragEnd"
+      >
+        <div class="card rounded-1">
+          <div class="px-3 d-flex justify-content-between">
+            <div class="d-flex justify-content-between align-items-center">
+              <img class="drag-icon" src="./assets/drag-icon.svg" alt="drag and drop icon">
+              <h2 class="mx-4 my-0"> {{ recipe.name }} </h2>
+            </div>
+            <button class="settings">
+              <img src="./assets/settings.svg" alt="drag and drop icon">
+            </button>
+          </div>
+          <div class="px-2">
+            <VueDraggableNext
+              v-model="recipe.items"
+              group="items"
+              :move="checkMove"
+              @end="onDragEnd"
+            >
+              <div
+                v-for="(item, i) in recipe.items"
+                :key="i"
+                class="card mb-2"
+              >
+                <div class="ingredient rounded-1 px-2 d-flex justify-content-between">
+                  <div class="d-flex align-items-center">
+                    <img class="drag-icon" src="./assets/drag-icon.svg" alt="drag and drop icon">
+                    <div class="mx-4">
+                      <p>{{ item.name }}</p>
+                      <p class="quantity m-0">x{{ item.quantity }}</p>
+                    </div>
+                  </div>
+                  <button class="settings">
+                    <img src="./assets/settings.svg" alt="drag and drop icon">
+                  </button>
+                </div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+              </div>
+            </VueDraggableNext>
+          </div>
+        </div>
+      </VueDraggableNext>
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    <div class="d-flex justify-center ">
+      <button>
+        Add Recipe
+      </button>
+      <button>
+        Add ingredient
+      </button>
+    </div>
+  </div>
 </template>
 
+<script setup lang="ts">
+import { ref } from 'vue';
+import { VueDraggableNext } from 'vue-draggable-next';
+import { useDragStore } from '@/stores/dragStore'
+
+const dragStore = useDragStore()
+
+
+// Fonction appelée lorsque le drag est terminé
+function onDragEnd() {
+  console.log("Drag terminé !");
+}
+
+// Fonction pour vérifier si un déplacement est permis
+function checkMove(evt: any) {
+  return true;
+}
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
+.container {
+  max-width: 1200px;
+}
+.card {
+  cursor: grab;
+  border: 0;
+  background-color: var(--medium-grey);
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.ingredient {
+  background-color: white;
+  width: 100%;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.quantity {
+  color: var(--purple);
+  font-size: 13px;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.settings {
+  background-color: transparent;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.drag-icon {
+  width: 15px;
 }
 </style>
