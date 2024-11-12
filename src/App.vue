@@ -1,75 +1,58 @@
 <template>
-  <div class="container">
-    <h1>Recipes</h1>
+  <div class="container m-0">
     <div class="row">
-      <VueDraggableNext
-        v-for="(recipe, index) in dragStore.recipes"
-        :key="index"
-        class="col"
-        v-model="recipe.items"
-        group="shared"
-        :sort="true"
-        @end="onDragEnd"
-      >
-        <div class="card rounded-1">
-          <div class="px-3 d-flex justify-content-between">
-            <div class="d-flex justify-content-between align-items-center">
-              <img class="drag-icon" src="./assets/drag-icon.svg" alt="drag and drop icon">
-              <h2 class="mx-4 my-0"> {{ recipe.name }} </h2>
-            </div>
-            <button class="settings">
-              <img src="./assets/settings.svg" alt="drag and drop icon">
-            </button>
+      <div class="container col-9">
+        <h1>All Recipes</h1>
+        <div class="row">
+          <VueDraggableNext
+            v-model="dragStore.recipes"
+            group="shared"
+            :sort="true"
+            @end="onDragEnd"
+            class="d-flex start flex-wrap "
+          >
+          <div v-for="(recipe, index) in dragStore.recipes"
+          :key="index" class="p-1">
+            <Recipe :recipe="recipe"/>
           </div>
-          <div class="px-2">
-            <VueDraggableNext
-              v-model="recipe.items"
-              group="items"
-              :move="checkMove"
-              @end="onDragEnd"
-            >
-              <div
-                v-for="(item, i) in recipe.items"
-                :key="i"
-                class="card mb-2"
-              >
-                <div class="ingredient rounded-1 px-2 d-flex justify-content-between">
-                  <div class="d-flex align-items-center">
-                    <img class="drag-icon" src="./assets/drag-icon.svg" alt="drag and drop icon">
-                    <div class="mx-4">
-                      <p>{{ item.name }}</p>
-                      <p class="quantity m-0">x{{ item.quantity }}</p>
-                    </div>
-                  </div>
-                  <button class="settings">
-                    <img src="./assets/settings.svg" alt="drag and drop icon">
-                  </button>
-                </div>
-
-              </div>
-            </VueDraggableNext>
-          </div>
+          </VueDraggableNext>
         </div>
-      </VueDraggableNext>
+      </div>
+      <div class="col">
+        <div class="bg-light"></div>
+      </div>
     </div>
-    <div class="d-flex justify-center ">
-      <button>
-        Add Recipe
-      </button>
-      <button>
-        Add ingredient
-      </button>
+    <div class="row">
+      <div>
+      </div>
+      <div class="d-flex justify-center">
+        <button @click="dragStore.toggleNewRecipeModal">
+          Add Recipe
+        </button>
+        <button @click="dragStore.toggleNewIngredientModal">
+          Add ingredient
+        </button>
+      </div>
+    </div>
+    <div v-show="dragStore.showNewRecipeModal">
+      <Modal :fields="recipeFields" modal-name="New Recipe" @submit="handleNewRecipe"/>
+    </div>
+    <div v-show="dragStore.showNewIngredientModal">
+      <Modal :fields="ingredientsFields" modal-name="New Ingredient" @submit="handleNewIngredient"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
 import { useDragStore } from '@/stores/dragStore'
+import Modal from './components/Modal.vue'
+import Recipe from './components/Recipe.vue';
 
 const dragStore = useDragStore()
 
+const ingredientsFields = [{name: "Ingredient", type: "string", placeholder:"Tomatoes"}, {name: "Quantity", type: "number", placeholder:"5"}, {name: "Recipe", type: "string", placeholder:"Pasta alla Bolognese"}]
+const recipeFields = [{name: "Recipe", type: "string", placeholder:"Pasta alla Bolognese"}]
 
 // Fonction appelée lorsque le drag est terminé
 function onDragEnd() {
@@ -80,33 +63,27 @@ function onDragEnd() {
 function checkMove(evt: any) {
   return true;
 }
+
+const handleNewRecipe = (formData: any) => {
+  dragStore.addRecipe(formData.recipe)
+}
+
+const handleNewIngredient = (formData:any) => {
+  const recipe = dragStore.recipes.filter(recipe => recipe.name.toLowerCase() === formData.recipe.toLowerCase())
+  const recipeId = recipe[0].id
+  const ingredient = {
+    name : formData.ingredient,
+    quantity : formData.quantity
+  }
+  dragStore.addIngredient(recipeId, ingredient)
+}
+
+
+
 </script>
 
 <style scoped>
 .container {
   max-width: 1200px;
-}
-.card {
-  cursor: grab;
-  border: 0;
-  background-color: var(--medium-grey);
-}
-
-.ingredient {
-  background-color: white;
-  width: 100%;
-}
-
-.quantity {
-  color: var(--purple);
-  font-size: 13px;
-}
-
-.settings {
-  background-color: transparent;
-}
-
-.drag-icon {
-  width: 15px;
 }
 </style>
