@@ -18,7 +18,9 @@ export const useDragStore = defineStore('drag', {
         }, 
         addIngredient(recipeId: number, ingredientInfo: any) {
             const recipe = this.recipes.find(recipe => recipe.id === recipeId)
-            recipe?.items.push(ingredientInfo)
+            if(recipe) {
+                recipe.items.push(ingredientInfo)
+            }
         },
         removeRecipe(recipeName: string) {
             this.recipes = this.recipes.filter(recipe => recipe.name !== recipeName)
@@ -35,5 +37,9 @@ export const useDragStore = defineStore('drag', {
                 recipe.items = recipe.items.filter((item) => item.name !== ingredientName);
             }
         },
+        closeModal() {
+            this.showNewIngredientModal = false
+            this.showNewRecipeModal = false
+        }
     }
 })
