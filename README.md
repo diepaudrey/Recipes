@@ -1,6 +1,9 @@
 # Recipes
 
-This template should help get you started developing with Vue 3 in Vite.
+Recipes is a drag and drop application where you can add, edit and delete recipes of yours.
+
+This application was developed in Vue 3 with TypeScript using the Composition API, along with Bootstrap and Pinia for state management. I structured the application into reusable, medium-sized components, and it is responsive thanks to Bootstrap. The UI/UX design was created by me using Figma.
+
 
 ## Recommended IDE Setup
 
@@ -37,3 +40,5 @@ npm run build
 ```sh
 npm run lint
 ```
+
+
