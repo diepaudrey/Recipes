@@ -22,6 +22,7 @@
             group="items"
             @start="(event) => onDragStart(event, recipe)"
             @change="(event) => onDragMove(event, recipe)"
+            @end="onDragEnd"
         >
             <div
             v-for="(item, i) in recipe.items"
@@ -65,9 +66,18 @@ function onDragMove(event: any, recipe: any) {
     if(dragStore.currentDraggedItem && event.moved) {
         dragStore.currentDraggedItem.name = recipe.name
         dragStore.currentDraggedItem.newPosition = event.moved.newIndex
-
     }
 }
+
+function onDragEnd() {
+    clearTimeout(dragStore.draggedTimeout)
+    dragStore.draggedTimeout = setTimeout(() => {
+        dragStore.currentDraggedItem = {}
+    }, 3000)
+
+}
+
+
 </script>
 
 <style scoped>

@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="col">
-        <div class="p-2" v-if="dragStore.currentDraggedItem">
+        <div class="p-2" v-if="Object.keys(dragStore.currentDraggedItem).length !== 0">
           <DragItem :item-data="dragStore.currentDraggedItem"/>
         </div>
       </div>

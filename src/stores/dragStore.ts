@@ -10,6 +10,7 @@ export const useDragStore = defineStore('drag', {
         showNewIngredientModal: false,
         showNewRecipeModal: false,
         currentDraggedItem: {},
+        draggedTimeout: 0,
     }),
     actions : {
         //Recipes methods
