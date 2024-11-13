@@ -30,7 +30,7 @@ const props = defineProps({
         type: Array<{name: string, type: string, placeholder: string, value?: any}>,
         default: () => [
             { name: "Ingredient", type: "text", placeholder: "Enter ingredient", value: "" },
-            { name: "Quantity", type: "number", placeholder: "Enter quantity", value: "" }
+            { name: "Quantity", type: "text", placeholder: "Enter quantity", value: "" }
         ]
     },
 

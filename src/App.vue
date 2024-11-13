@@ -1,14 +1,17 @@
 <template>
-  <div class="container m-0">
+  <div class="m-0">
+    <div class="d-flex align-items-center mb-1">
+      <img class="logo" src="@/assets/logo.svg" alt="Food logo">
+      <h1>All Recipes</h1>
+    </div>
+    
     <div class="row">
       <div class="container col-9">
-        <h1>All Recipes</h1>
         <div class="row">
           <VueDraggableNext
             v-model="dragStore.recipes"
             group="shared"
             :sort="true"
-            @end="onDragEnd"
             class="d-flex start flex-wrap "
           >
           <div v-for="(recipe, index) in dragStore.recipes"
@@ -19,7 +22,9 @@
         </div>
       </div>
       <div class="col">
-        <div class="bg-light"></div>
+        <div class="p-2" v-if="dragStore.currentDraggedItem">
+          <DragItem :item-data="dragStore.currentDraggedItem"/>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -47,22 +52,14 @@
 import { VueDraggableNext } from 'vue-draggable-next';
 import { useDragStore } from '@/stores/dragStore'
 import Modal from './components/Modal.vue'
+import DragItem from './components/DragItem.vue';
 import Recipe from './components/Recipe.vue';
 
 const dragStore = useDragStore()
 
-const ingredientsFields = [{name: "Ingredient", type: "string", placeholder:"Tomatoes"}, {name: "Quantity", type: "number", placeholder:"5"}, {name: "Recipe", type: "string", placeholder:"Pasta alla Bolognese"}]
+const ingredientsFields = [{name: "Ingredient", type: "string", placeholder:"Tomatoes"}, {name: "Quantity", type: "string", placeholder:"5"}, {name: "Recipe", type: "string", placeholder:"Pasta alla Bolognese"}]
 const recipeFields = [{name: "Recipe", type: "string", placeholder:"Pasta alla Bolognese"}]
 
-// Fonction appelée lorsque le drag est terminé
-function onDragEnd() {
-  console.log("Drag terminé !");
-}
-
-// Fonction pour vérifier si un déplacement est permis
-function checkMove(evt: any) {
-  return true;
-}
 
 const handleNewRecipe = (formData: any) => {
   dragStore.addRecipe(formData.recipe)
